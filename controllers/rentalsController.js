@@ -5,6 +5,7 @@ import db from "../db.js";
 
 export async function getRentals(req, res) {
   let { customerId, gameId } = req.query;
+  const { offset, limit, order, desc } = req.query;
   const rentalFinal = [];
 
   if (!customerId) customerId = null;
@@ -22,6 +23,9 @@ export async function getRentals(req, res) {
       JOIN categories ON games."categoryId" = categories.id
       WHERE (${customerId} IS NULL OR "customerId" = ${customerId})
       AND (${gameId} IS NULL OR "gameId" = ${gameId})
+      ORDER BY ${order ? (desc === "true" ? order + " desc" : order) : false} 
+      LIMIT ${limit ? limit : null}
+      OFFSET ${offset ? offset : null} 
       `
     )
     const rentals = result.rows;

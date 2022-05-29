@@ -4,10 +4,16 @@ import db from "../db.js";
 
 export async function getAllCustomers(req, res) {
   let { cpf } = req.query;
+  const { offset, limit, order, desc } = req.query;
   if (!cpf) cpf = '';
 
   try {
-    const result = await db.query(`SELECT * FROM customers WHERE cpf LIKE '${cpf}%'`)
+    const result = await db.query(
+      `SELECT * FROM customers 
+      WHERE cpf LIKE '${cpf}%'
+      ORDER BY ${order ? (desc === "true" ? order + " desc" : order) : false} 
+      LIMIT ${limit ? limit : null}
+      OFFSET ${offset ? offset : null}`)
     res.status(200).send(result.rows)
   } catch (e) {
     console.log(chalk.red.bold(e));
