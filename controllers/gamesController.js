@@ -2,11 +2,16 @@ import chalk from "chalk";
 import db from "../db.js";
 
 export async function getGames(req, res) {
+  let { name } = req.query;
+
+  if (!name) { name = '' }
+  else { name = name.toLowerCase(); }
 
   try {
     const result = await db.query(
       `SELECT games.*, categories.name as "categoryName" FROM games
-      JOIN categories ON categories.id = games."categoryId"`)
+      JOIN categories ON categories.id = games."categoryId"
+      WHERE LOWER(games.name) LIKE '${name}%'`);
 
     res.status(200).send(result.rows);
   } catch (e) {
