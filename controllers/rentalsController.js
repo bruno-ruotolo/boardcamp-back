@@ -1,4 +1,5 @@
 import chalk from "chalk";
+import dayjs from "dayjs";
 
 import db from "../db.js";
 
@@ -85,6 +86,50 @@ export async function postRentals(req, res) {
       , [customerId, gameId, daysRented, rentDate, originalPrice, returnDate, delayFee]);
 
     res.sendStatus(201)
+  } catch (e) {
+    console.log(chalk.red.bold(e));
+    res.sendStatus(500);
+  }
+}
+
+export async function postReturnRental(req, res) {
+  const { id } = req.params
+
+  try {
+    const result = await db.query(`SELECT * FROM rentals WHERE id = ${id}`);
+
+    if (result.rows.length === 0) return res.sendStatus(404);
+    if (result.rows[0].returnDate !== null) return res.sendStatus(400);
+
+    const { rentDate, originalPrice, daysRented } = result.rows[0];
+    const daysFee = Math.floor((dayjs() - rentDate) / (1000 * 60 * 60 * 24)) - daysRented;
+    const pricePerDay = originalPrice / daysRented;
+    const returnDate = dayjs().format("YYYY-MM-DD").toString();
+    const delayFee = daysFee * pricePerDay;
+
+    await db.query(
+      `UPDATE rentals 
+      SET "returnDate" = '${returnDate}',
+      "delayFee" = ${delayFee >= 0 ? delayFee : 0}
+      WHERE id = ${id}`)
+    res.sendStatus(200);
+  } catch (e) {
+    console.log(chalk.red.bold(e));
+    res.sendStatus(500);
+  }
+}
+
+export async function deleteRental(req, res) {
+  const { id } = req.params
+
+  try {
+    const result = await db.query(`SELECT * FROM rentals WHERE id = ${id}`);
+
+    if (result.rows.length === 0) return res.sendStatus(404);
+    if (result.rows[0].returnDate !== null) return res.sendStatus(400);
+
+    await db.query(`DELETE FROM rentals WHERE id = ${id}`)
+    res.sendStatus(200);
   } catch (e) {
     console.log(chalk.red.bold(e));
     res.sendStatus(500);
