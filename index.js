@@ -20,6 +20,7 @@ app.use(customersRouter)
 app.use(rentalsRouter)
 
 //server
-app.listen(process.env.PORT, () => {
-  console.log(chalk.green.bold("Server ON Port " + process.env.PORT));
+const port = process.env.PORT || 4000;
+app.listen(port, () => {
+  console.log(chalk.green.bold("Server ON Port " + port));
 });
