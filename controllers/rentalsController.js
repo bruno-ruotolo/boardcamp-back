@@ -58,7 +58,7 @@ export async function getRentals(req, res) {
         id: rental.gameId,
         name: rental.gameName,
         categoryId: rental.categoryId,
-        categoryname: rental.categoryname
+        categoryName: rental.categoryName
       }
 
       rentalFinal.push({ ...rentalInfos, customer, game });

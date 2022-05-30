@@ -9,9 +9,9 @@ export async function customersSchema(req, res, next) {
 
   const custSchema = joi.object({
     name: joi.string().required(),
-    phone: joi.string().min(10).max(11),
-    cpf: joi.string().length(11),
-    birthday: joi.date().greater('1800-1-1').less('2022-5-27')
+    phone: joi.string().min(10).max(11).required(),
+    cpf: joi.string().length(11).required(),
+    birthday: joi.date().greater('1800-1-1').less('2022-5-27').required()
   });
 
   const { error } = custSchema.validate(customersBody, { abortEarly: false });
@@ -32,20 +32,6 @@ export async function customersSchema(req, res, next) {
         if (cpfRow.cpf === cpf) return res.sendStatus(409);
       }
     }
-    // for (let cpfRow of result.rows) {
-    //   if (cpfUser.rows[0]) {
-    //     console.log(cpf, cpfUser.rows[0].cpf)
-    //     if (id === cpfUser.rows[0].id && cpf !== cpfUser.rows[0].cpf) {
-    //       if (cpfRow.cpf === cpf) return res.sendStatus(409);
-    //     } else if (!id) {
-    //       if (cpfRow.cpf === cpf) return res.sendStatus(409);
-    //     }
-    //   } else {
-    //     if (cpfRow.cpf === cpf) return res.sendStatus(409);
-    //   }
-
-    // }
-
     res.locals.customersBody = customersBody;
     next();
   } catch (e) {
