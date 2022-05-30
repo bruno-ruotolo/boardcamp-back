@@ -1,6 +1,7 @@
-import db from "../../db.js";
 import chalk from "chalk";
 import joi from "joi";
+
+import db from "../../db.js";
 
 export async function gamesSchema(req, res, next) {
   const { name, image, stockTotal, categoryId, pricePerDay } = req.body

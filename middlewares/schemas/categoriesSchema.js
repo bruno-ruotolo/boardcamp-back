@@ -1,4 +1,5 @@
 import joi from "joi";
+
 import db from "../../db.js";
 
 export async function categoriesSchema(req, res, next) {

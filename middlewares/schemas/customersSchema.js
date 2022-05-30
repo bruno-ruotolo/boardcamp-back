@@ -1,5 +1,6 @@
 import chalk from "chalk";
 import joi from "joi";
+
 import db from "../../db.js";
 
 export async function customersSchema(req, res, next) {
@@ -11,7 +12,7 @@ export async function customersSchema(req, res, next) {
     name: joi.string().required(),
     phone: joi.string().min(10).max(11).required(),
     cpf: joi.string().length(11).required(),
-    birthday: joi.date().greater('1800-1-1').less('2022-5-27').required()
+    birthday: joi.date().iso().greater('1800-1-1').less('2022-5-27').required()
   });
 
   const { error } = custSchema.validate(customersBody, { abortEarly: false });
